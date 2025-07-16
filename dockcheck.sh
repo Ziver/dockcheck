@@ -414,7 +414,7 @@ check_image() {
 
   # Skipping non-compose containers unless option is set
   ContLabels=$(docker inspect "$i" --format '{{json .Config.Labels}}')
-  ContPath=$($jqbin -r '."com.docker.compose.project.working_dir"' <<< "$ContLabels")
+  ContPath=$($jqbin -r '.["com.docker.compose.project.working_dir"]' <<< "$ContLabels")
   [[ "$ContPath" == "null" ]] && ContPath=""
   if [[ -z "$ContPath" ]] && [[ "$DRunUp" == false ]]; then
     printf "%s\n" "NoUpdates !$i - not checked, no compose file"
@@ -526,9 +526,9 @@ if [[ -n "${GotUpdates:-}" ]]; then
       printf "\n%bNow updating (%s/%s): %b%s%b\n" "$c_teal" "$CurrentQue" "$NumberofUpdates" "$c_blue" "$i" "$c_reset"
       ContLabels=$(docker inspect "$i" --format '{{json .Config.Labels}}')
       ContImage=$(docker inspect "$i" --format='{{.Config.Image}}')
-      ContPath=$($jqbin -r '."com.docker.compose.project.working_dir"' <<< "$ContLabels")
+      ContPath=$($jqbin -r '.["com.docker.compose.project.working_dir"]' <<< "$ContLabels")
       [[ "$ContPath" == "null" ]] && ContPath=""
-      ContUpdateLabel=$($jqbin -r '."mag37.dockcheck.update"' <<< "$ContLabels")
+      ContUpdateLabel=$($jqbin -r '.["mag37.dockcheck.update"]' <<< "$ContLabels")
       [[ "$ContUpdateLabel" == "null" ]] && ContUpdateLabel=""
       # Checking if Label Only -option is set, and if container got the label
       [[ "$OnlyLabel" == true ]] && { [[ "$ContUpdateLabel" != true ]] && { echo "No update label, skipping."; continue; } }
@@ -555,19 +555,19 @@ if [[ -n "${GotUpdates:-}" ]]; then
       # Extract labels and metadata
       ContLabels=$(docker inspect "$i" --format '{{json .Config.Labels}}')
       ContImage=$(docker inspect "$i" --format='{{.Config.Image}}')
-      ContPath=$($jqbin -r '."com.docker.compose.project.working_dir"' <<< "$ContLabels")
+      ContPath=$($jqbin -r '.["com.docker.compose.project.working_dir"]' <<< "$ContLabels")
       [[ "$ContPath" == "null" ]] && ContPath=""
-      ContConfigFile=$($jqbin -r '."com.docker.compose.project.config_files"' <<< "$ContLabels")
+      ContConfigFile=$($jqbin -r '.["com.docker.compose.project.config_files"]' <<< "$ContLabels")
       [[ "$ContConfigFile" == "null" ]] && ContConfigFile=""
-      ContName=$($jqbin -r '."com.docker.compose.service"' <<< "$ContLabels")
+      ContName=$($jqbin -r '.["com.docker.compose.service"]' <<< "$ContLabels")
       [[ "$ContName" == "null" ]] && ContName=""
-      ContEnv=$($jqbin -r '."com.docker.compose.project.environment_file"' <<< "$ContLabels")
+      ContEnv=$($jqbin -r '.["com.docker.compose.project.environment_file"]' <<< "$ContLabels")
       [[ "$ContEnv" == "null" ]] && ContEnv=""
-      ContUpdateLabel=$($jqbin -r '."mag37.dockcheck.update"' <<< "$ContLabels")
+      ContUpdateLabel=$($jqbin -r '.["mag37.dockcheck.update"]' <<< "$ContLabels")
       [[ "$ContUpdateLabel" == "null" ]] && ContUpdateLabel=""
-      ContRestartStack=$($jqbin -r '."mag37.dockcheck.restart-stack"' <<< "$ContLabels")
+      ContRestartStack=$($jqbin -r '.["mag37.dockcheck.restart-stack"]' <<< "$ContLabels")
       [[ "$ContRestartStack" == "null" ]] && ContRestartStack=""
-      ContOnlySpecific=$($jqbin -r '."mag37.dockcheck.only-specific-container"' <<< "$ContLabels")
+      ContOnlySpecific=$($jqbin -r '.["mag37.dockcheck.only-specific-container"]' <<< "$ContLabels")
       [[ "$ContOnlySpecific" == "null" ]] && ContRestartStack=""
 
       # Checking if compose-values are empty - hence started with docker run
